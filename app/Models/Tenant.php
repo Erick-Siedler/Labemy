@@ -1,0 +1,94 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\UserRelation;
+
+class Tenant extends Model
+{
+    protected $fillable = [
+        'creator_id',
+        'name',
+        'slug',
+        'type',
+        'status',
+        'plan',
+        'trial_ends_at',
+        'settings',
+        'storage_used_mb',
+        'max_storage_mb',
+        'max_labs',
+        'max_users'
+    ];
+
+    protected $casts = [
+        'settings' => 'array',
+    ];
+
+    /**
+     * Executa a rotina 'users' no fluxo de negocio.
+     */
+    public function users(){
+        return $this->belongsToMany(User::class, 'users_rel', 'tenant_id', 'user_id')
+            ->withPivot(['id', 'lab_id', 'group_id', 'role', 'status', 'invited_at', 'accepted_at'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Executa a rotina 'relations' no fluxo de negocio.
+     */
+    public function relations()
+    {
+        return $this->hasMany(UserRelation::class, 'tenant_id');
+    }
+
+    /**
+     * Executa a rotina 'getSetting' no fluxo de negocio.
+     */
+    public function getSetting(string $key, $default = null)
+    {
+        $settings = $this->settings;
+
+        if (is_string($settings)) {
+            $decoded = json_decode($settings, true);
+
+            if (is_string($decoded)) {
+                $decoded = json_decode($decoded, true);
+            }
+
+            $settings = $decoded;
+        }
+
+        if (!is_array($settings)) {
+            $settings = [];
+        }
+
+        return data_get($settings, $key, $default);
+    }
+
+    /**
+     * Executa a rotina 'limitFor' no fluxo de negocio.
+     */
+    public function limitFor(string $resource): ?int
+    {
+        return match ($resource) {
+            'labs' => $this->getSetting('max_labs') ?? $this->max_labs,
+            'groups' => $this->getSetting('max_groups'),
+            'projects' => $this->getSetting('max_projects'),
+            'users' => $this->getSetting('max_users') ?? $this->max_users,
+            'storage' => $this->getSetting('max_storage_mb') ?? $this->max_storage_mb,
+            default => null,
+        };
+    }
+
+    /**
+     * Executa a rotina 'hasReachedLimit' no fluxo de negocio.
+     */
+    public function hasReachedLimit(string $resource, int $currentCount): bool
+    {
+        $limit = $this->limitFor($resource);
+        return $limit !== null && $currentCount >= $limit;
+    }
+}

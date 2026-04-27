@@ -1,0 +1,72 @@
+/* Remove sombras decorativas de botoes e links de acao.
+   Mantem foco visivel com outline para acessibilidade. */
+
+button,
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+a.bt,
+.bt,
+a.btn,
+button.btn,
+[class^='btn-'],
+[class*=' btn-'],
+.not-clear-btn,
+.logout-btn,
+.students-invite-btn,
+.overview-invite-btn {
+    box-shadow: none !important;
+}
+
+button:hover,
+input[type='button']:hover,
+input[type='submit']:hover,
+input[type='reset']:hover,
+a.bt:hover,
+.bt:hover,
+a.btn:hover,
+button.btn:hover,
+[class^='btn-']:hover,
+[class*=' btn-']:hover,
+.not-clear-btn:hover,
+.logout-btn:hover,
+.students-invite-btn:hover,
+.overview-invite-btn:hover {
+    box-shadow: none !important;
+}
+
+button:active,
+input[type='button']:active,
+input[type='submit']:active,
+input[type='reset']:active,
+a.bt:active,
+.bt:active,
+a.btn:active,
+button.btn:active,
+[class^='btn-']:active,
+[class*=' btn-']:active,
+.not-clear-btn:active,
+.logout-btn:active,
+.students-invite-btn:active,
+.overview-invite-btn:active {
+    box-shadow: none !important;
+}
+
+button:focus-visible,
+input[type='button']:focus-visible,
+input[type='submit']:focus-visible,
+input[type='reset']:focus-visible,
+a.bt:focus-visible,
+.bt:focus-visible,
+a.btn:focus-visible,
+button.btn:focus-visible,
+[class^='btn-']:focus-visible,
+[class*=' btn-']:focus-visible,
+.not-clear-btn:focus-visible,
+.logout-btn:focus-visible,
+.students-invite-btn:focus-visible,
+.overview-invite-btn:focus-visible {
+    box-shadow: none !important;
+    outline: 2px solid #ff8c00;
+    outline-offset: 2px;
+}
